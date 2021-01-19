@@ -12,6 +12,8 @@ from .input import pdfminer_wrapper
 from .input import tesseract
 from .input import tesseract4
 from .input import gvision
+from .input import txt
+from .input import png
 
 from invoice2data.extract.loader import read_templates
 
@@ -28,12 +30,14 @@ input_mapping = {
     "tesseract4": tesseract4,
     "pdfminer": pdfminer_wrapper,
     "gvision": gvision,
+    "txt": txt,
+    "png": png,
 }
 
 output_mapping = {"csv": to_csv, "json": to_json, "xml": to_xml, "none": None}
 
 
-def extract_data(invoicefile, templates=None, input_module=pdftotext):
+def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None):
     """Extracts structured data from PDF/image invoices.
 
     This function uses the text extracted from a PDF file or image and
@@ -75,14 +79,18 @@ def extract_data(invoicefile, templates=None, input_module=pdftotext):
      'currency': 'INR', 'desc': 'Invoice IBZY2087 from OYO'}
 
     """
+    #logging.basicConfig(level=logging.DEBUG)
+
     if templates is None:
         templates = read_templates()
 
+    input_module = input_mapping[input_module]
+    
     # print(templates[0])
-    extracted_str = input_module.to_text(invoicefile).decode("utf-8")
+    extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist).decode("utf-8")
 
     logger.debug("START pdftotext result ===========================")
-    logger.debug(extracted_str)
+    logger.error(extracted_str)
     logger.debug("END pdftotext result =============================")
 
     logger.debug("Testing {} template files".format(len(templates)))
@@ -180,8 +188,19 @@ def create_parser():
         help="File or directory to analyze.",
     )
 
+    parser.add_argument(
+        "--cmdlist",
+        dest="cmdlist",
+        default="tesseract,-c,tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="cmdlist for tesseract",
+    )
+
     return parser
 
+def generate_output(output, output_name="invoices-output", output_date_format="%Y-%m-%d", output_module=None):
+    if output_module is not None:
+        output_module = output_mapping[output_module]
+        output_module.write_to_file(output, output_name, output_date_format)
 
 def main(args=None):
     """Take folder or single file and analyze each."""
@@ -194,8 +213,8 @@ def main(args=None):
     else:
         logging.basicConfig(level=logging.INFO)
 
-    input_module = input_mapping[args.input_reader]
-    output_module = output_mapping[args.output_format]
+    if args.cmdlist:
+        cmdlist = args.cmdlist.split(",")
 
     templates = []
     # Load templates from external folder if set.
@@ -207,29 +226,28 @@ def main(args=None):
         templates += read_templates()
     output = []
     for f in args.input_files:
-        res = extract_data(f.name, templates=templates, input_module=input_module)
+        res = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist)
         if res:
             logger.info(res)
             output.append(res)
             if args.copy:
                 filename = args.filename.format(
-                    date=res["date"].strftime("%Y-%m-%d"),
+                    #date=res["date"].strftime("%Y-%m-%d"),
+                    date=res["date"],
                     invoice_number=res["invoice_number"],
                     desc=res["desc"],
                 )
                 shutil.copyfile(f.name, join(args.copy, filename))
             if args.move:
                 filename = args.filename.format(
-                    date=res["date"].strftime("%Y-%m-%d"),
+                    date=res["date"],
                     invoice_number=res["invoice_number"],
                     desc=res["desc"],
                 )
                 shutil.move(f.name, join(args.move, filename))
         f.close()
 
-    if output_module is not None:
-        output_module.write_to_file(output, args.output_name, args.output_date_format)
-
+    generate_output(output, output_name=args.output_name, output_date_format=args.output_date_format, output_module=args.output_format)
 
 if __name__ == "__main__":
     main()

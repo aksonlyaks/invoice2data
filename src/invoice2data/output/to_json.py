@@ -43,9 +43,9 @@ def write_to_file(data, path, date_format="%Y-%m-%d"):
         for line in data:
             for k, v in line.items():
                 if k.startswith("date") or k.endswith("date"):
-                    line[k] = v.strftime(date_format)
-        print(type(json))
-        print(json)
+                    if line[k]:
+                        line[k] = v.strftime(date_format)
+
         json.dump(
             data,
             json_file,
