@@ -1,0 +1,23 @@
+issuer: GOLDEN FRESH 
+keywords:
+- FRESH
+- SUPERMARKET
+
+fields:
+  amount: Gross\s&\s+(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: \[?Bill No[\|\[]?\sB-(\d+)
+  date: Date\s+[\|\]\[]?_(\d{1,2}\/\d{1,2}\/\d{1,2})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: em\s+MRP\s+Q?T?Y\s+___\s+Price\s+Amount
+  end: GST
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<mrp>\d+)\.?\d*\s(?P<qty>\d+)\.?\d*\s(?P<rate>\d+)\.?\d*\s(?P<total>\d+)
