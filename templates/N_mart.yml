@@ -1,0 +1,21 @@
+issuer: N Mart
+keywords:
+- Nmart
+
+fields:
+  amount: Net\s?Bill\s?Am[o|a]unt\s?:\s?[₹|&|\s](\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: \s?[B|T]ill\s?N[a|o]:\s?(S\/\d+)
+  date: \s?[B|T]ill\s?N[a|o]:\s?[S0-9/]+\s?(\d{1,2}\-\d{1,2}\-\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - '%d-%m-%Y'
+
+lines:
+  start: \s*Ttem\s*Ma[m|r][e|\s?]\s*QTY\s*PRIC[E|\:]\s*TOTA[T|L].?
+  end: Total
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z.]\b)\s?(?P<qty>\d+\.\d{1,2})(?P<price>\d+)\s*(?P<total>\d+)\s*

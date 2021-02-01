@@ -3,7 +3,7 @@ keywords:
 - HafyMish
 
 fields:
-  amount: Total:\s+%?(\d+\.\d+)
+  amount: Total:\s+[%$]?([0-9,]+.\d+)
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: Bill#?#?:\s?(\d+)
   date: Bill#?#?\s?:\s?\d+\s+\[?ORIGINAL\]?\s+(\d{1,2}[.-]?\d{1,2}[.-]?\d{1,4})

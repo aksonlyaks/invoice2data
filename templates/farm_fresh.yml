@@ -1,0 +1,24 @@
+issuer: FARM FRESH SUPERMARKET
+keywords:
+#- No-41          #--psm 6
+- City Road          #--psm 3
+
+fields:
+  amount: Total\s+Amt\-\s+(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: B[I|i]LL\s?N[O|a|o][\:|\.]\s?(\d+)
+  date: B[I|i]LLN[O|a]:\d+\s+Date\s+\-\s+(\d{1,2}\-\d{1,2}\-\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%-%m-%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: (i|I)tem\s+Q?t?y\s+R?a?t?e?\s+T?o?t?a?l?\s+
+  end: \s+Total\s+Amt\-
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s+(?P<quantity>\d+)\s+(?P<mrp>\d+)\.?\d*\s+(?P<rate>\d+)\.?\d*\s+(?P<total>\d+)
+

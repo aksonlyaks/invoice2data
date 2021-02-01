@@ -1,0 +1,23 @@
+issuer: KILOS AND GRAMS
+keywords:
+- HENNAGARA
+
+fields:
+  amount: \s*GTOTAL\s?[:| ]\s?(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bill\s?No.\s?(\w+)    
+  date: \s+Date\s*[:|\s?]\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: ([.|&| |S])*\s*Description\s*[G|l|t]*y\s+MRP\s+RATE\s+Amt
+  end: ([A-Za-z ]+:?[0-9]\b)\s+SUB\s?TOTAL
+  line: (?P<description>[A-Za-z0-9-. ]+[A-Za-z]\b)\s*(?P<qty>\d+\.?\d{1,2})\s*(?P<mrp>\d+\.?\d{1,2})\s*(?P<rate>\d+\.?\d{1,2})\s*(?P<total>\d+\.\d{1,2})\s*
+

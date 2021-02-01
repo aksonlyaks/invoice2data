@@ -1,0 +1,23 @@
+# it works with --psm 6 and date will not get parse because in bill the last digit of year is missing.
+issuer: Poorva Resturant
+keywords:
+- Customer
+
+fields:
+  amount: Total\s?Amount\s+(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bill\s+No:\s+([A-Z0-9-]+)
+  date: Bill\s+No:\s+[A-Z0-9-]+\s+(\d{1,2}\/\d{1,2}\/\d{1,3})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: Amount\s+
+  end: \s+[FT]otal\s+Amount\s+
+  line: (?P<description>[A-Za-z0-9. {1}]+[A-Za-z ]\b)\s?(?P<quantity>[\d+])[Pc][c]\b\s?(?P<rate>\d+)\.?\d*\s?(?P<total>\d+)\.?\d*\s*

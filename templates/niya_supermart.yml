@@ -1,0 +1,24 @@
+# this is as per --psm 6
+issuer: NIYA SUPERMART 
+keywords:
+- Gandhi
+
+fields:
+  amount: NET\s?AMOUNT[.| ]\s*(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bil[l| ]\s?No:\s+(\d+)
+  date: Bil[l| ]\s?No:\s+\d+\s+(\d{1,2}\/\d{1,2}[\/|.]\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: item\s+Name\s+aty\s+Mrp\s+Rate\s+Total
+  end: \s+Grand
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s*(?P<quantity>\d+\.\d{2})\s*(?P<mrp>\d+)\s+(?P<rate>\d+\.\d{2})\s*(?P<total>\d+\.*\d{2})\s*
+

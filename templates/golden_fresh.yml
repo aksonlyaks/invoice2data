@@ -6,8 +6,8 @@ keywords:
 fields:
   amount: Gross\s&\s+(\d+\.\d+)
 #BillNo: 14282 31/08/2020 21:12:12:PM
-  invoice_number: \[?Bill No[\|\[]?\sB-(\d+)
-  date: Date\s+[\|\]\[]?_(\d{1,2}\/\d{1,2}\/\d{1,2})
+  invoice_number: Bill\s*No\s+(B\-\d+)
+  date: \s+Date\s+(\d{1,2}\/\d{1,2}\/\d{1,2})
 options:
   remove_whitespace: false 
   currency: INR 
@@ -18,6 +18,6 @@ options:
 
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
-  start: em\s+MRP\s+Q?T?Y\s+___\s+Price\s+Amount
-  end: GST
-  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<mrp>\d+)\.?\d*\s(?P<qty>\d+)\.?\d*\s(?P<rate>\d+)\.?\d*\s(?P<total>\d+)
+  start: (c|i|I)tem[s|\s*]MRP\s*QTY\s+Price\s+Amount
+  end: No\s+of
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<mrp>\d+\.?\d{1,2})\s*(?P<qty>\d+\.?\d{1,2})\s*(?P<price>\d+\.?\d{1,2})\s(?P<total>\d+\.\d*)\s*

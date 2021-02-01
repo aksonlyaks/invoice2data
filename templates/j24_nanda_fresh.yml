@@ -1,0 +1,23 @@
+issuer: J24-Nanda fresh 
+keywords:
+- 9/1
+
+fields:
+  amount: Total\s?\&\s?(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: (RBY\d+)
+  date: BillNo:\s+\d+\s+(\d{1,2}\/\d{1,2}\/\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: Name\s+Qty\s+Price\s+Amt
+  end: \s+Tax
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<quantity>\d+)\s(?P<mrp>\d+)\.?\d*\s(?P<rate>\d+)\.?\d*\s(?P<total>\d+)
+

@@ -1,0 +1,23 @@
+issuer: The Farmer House Green Leaf Super Market
+keywords:
+- Green
+- Hennur
+
+fields:
+  amount: CRD\s+(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bi[l|N]\s?No:\s?(\d+)
+  date: Bi[l|N]\s?No:\s?\d+\s?Date:\s?(\d{1,2}\/\d{1,2}\/\d{1,2})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: S.\s?(I|i)tem\s?Qty\s?Mip\s?Rate\s?Amount\s+
+  end:  (c|C)A
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s+(?P<quantity>\d+)\.+\d+\s+(?P<mrp>\d+)\.+\d+\s*(?P<rate>\d+)\.+\d+\s+(?P<total>\d+)\.?\d+\s*

@@ -1,0 +1,22 @@
+issuer: SHOP@1350
+keywords:
+- P@1350
+
+fields:
+  amount: Grand\s+Total\s+(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bill\s+No:\s+(\d+) 
+  date: Date:\s+(\d{1,2}\-\d{1,2}\-\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%-%m-%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: (i|I)tem\s+Name\s+Q?t?y\s+M?R?P?\s+R?a?t?e?\s+T?o?t?a?l?\s+
+  end: Grand\s+
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s+(?P<quantity>\d+)\s+(?P<mrp>\d+)\.?\d*\s+(?P<rate>\d+)\.?\d*\s+(?P<total>\d+)
