@@ -214,7 +214,7 @@ def main(args=None):
         logging.basicConfig(level=logging.INFO)
 
     if args.cmdlist:
-        cmdlist = args.cmdlist.split(",")
+        cmdlist = args.cmdlist.split("+")
 
     templates = []
     # Load templates from external folder if set.

@@ -101,12 +101,19 @@ class InvoiceTemplate(OrderedDict):
 
     def parse_number(self, value):
         assert (
-            value.count(self.options["decimal_separator"]) < 2
+            value.count(self.options["decimal_separator"]) < 3
         ), "Decimal separator cannot be present several times"
+        # Remove any leading spaces
+        value = value.lstrip()
+        last_comma_index = value.rfind(self.options["decimal_separator"])
         # replace decimal separator by a |
-        amount_pipe = value.replace(self.options["decimal_separator"], "|")
+        amount_pipe = value[:last_comma_index] + "|" + value[last_comma_index+1:]
+        #amount_pipe = value.replace(self.options["decimal_separator"], "|")
         # remove all possible thousands separators
-        amount_pipe_no_thousand_sep = re.sub(r"[.,\s]", "", amount_pipe)
+        amount_pipe_no_thousand_sep = re.sub(r"[.,]", "", amount_pipe)
+        if " " in amount_pipe_no_thousand_sep:
+            # remove values before space
+            amount_pipe_no_thousand_sep = amount_pipe_no_thousand_sep.split(" ")[1]
         # put dot as decimal sep
         return float(amount_pipe_no_thousand_sep.replace("|", "."))
 
