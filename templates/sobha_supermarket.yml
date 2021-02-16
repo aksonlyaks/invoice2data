@@ -1,0 +1,25 @@
+issuer: SOBHA SUPERMARKET
+keywords:
+- WORKING
+- SOBHA
+- SUPERMARKET
+
+fields:
+  amount: \s*(?:Received|scant|Balance|ane|lane|Sao)+\.?\s*\-?[\d.e]+\s*G*4*0*[5ZGCSFtrose.@ ]+\s*(\d+\.\d{1,2})
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: B?i?l?l?\s*No\s*(A\-\d+)
+  date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd% %m %Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: \s*[T|I]tem\s*MRP\s*QTY\s*Price\s*Tota?l?
+  end: Noof\s*[I|i]tem
+  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z26]\b):?\s*(?P<mrp>\d+\.\d{1,2})\s*(?P<quantity>\d+\.\d{1,2})\s*(?P<price>\d+\.\d{1,2})\s*(?P<total>\d+\.\d{1,2})\s*
+#  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z0-9]\b^\s)

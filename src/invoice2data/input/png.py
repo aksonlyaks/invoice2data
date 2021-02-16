@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-def to_text(path, cmdlist=None):
+def to_text(path, cmdlist=None, conv_cmdlist=None):
     """Wraps Tesseract OCR.
 
     Parameters
@@ -25,39 +25,69 @@ def to_text(path, cmdlist=None):
         raise EnvironmentError("imagemagick not installed.")
 
     # convert = "convert -density 350 %s -depth 8 tiff:-" % (path)
-    #convert = [
-    #    "convert",
-    #    "-density",
-    #    "350",
-    #    path,
-    #    "-depth",
-    #    "8",
-    #    "-alpha",
-    #    "off",
-    #    "tiff:-",
-    #]
-    #p1 = subprocess.Popen(convert, stdout=subprocess.PIPE)
-
-    #tess = ["tesseract", "-c", "tessedit_char_whitelist=/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", path, "stdout"]
-    if cmdlist == None:
-        tess = [
-            "tesseract",
-            "-l",
-            "eng",
-            "--oem",
-            "1",
-            "--psm",
-            "6",
-            "-c",
-            "tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    if conv_cmdlist != None:
+        """convert = [
+            "convert",
+            "-brightness-contrast",
+            "-70x10",
+            "-density",
+            "350",
+            "-depth",
+            "8",
+            "-alpha",
+            "off",
+            "tiff:-",
             path,
-            "stdout",
-        ]
+        ]"""
+        conv_cmdlist.append(path)
+        conv_cmdlist.append("tiff:-")
+        print(f'Image conversion cmd {conv_cmdlist}')
+
+        convert = conv_cmdlist
+
+        p1 = subprocess.Popen(convert, stdout=subprocess.PIPE)
+        if cmdlist == None:
+            tess = [
+                "tesseract",
+                "-l",
+                "eng",
+                "--oem",
+                "1",
+                "--psm",
+                "6",
+                "-c",
+                "tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                p1.stdin,
+                "stdout",
+            ]
+            p2 = subprocess.Popen(tess, stdin=p1.stdout, stdout=subprocess.PIPE)
+        else:
+            cmdlist.append("stdin")
+            cmdlist.append("stdout")
+            tess = cmdlist
+            p2 = subprocess.Popen(tess, stdin=p1.stdout, stdout=subprocess.PIPE)
+
     else:
-        cmdlist.append(path)
-        cmdlist.append("stdout")
-        tess = cmdlist
-    p2 = subprocess.Popen(tess, stdout=subprocess.PIPE)
+        #tess = ["tesseract", "-c", "tessedit_char_whitelist=/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", path, "stdout"]
+        if cmdlist == None:
+            tess = [
+                "tesseract",
+                "-l",
+                "eng",
+                "--oem",
+                "1",
+                "--psm",
+                "6",
+                "-c",
+                "tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                path,
+                "stdout",
+            ]
+        else:
+            cmdlist.append(path)
+            cmdlist.append("stdout")
+            tess = cmdlist
+        p2 = subprocess.Popen(tess,  stdout=subprocess.PIPE)
 
     out, err = p2.communicate()
 

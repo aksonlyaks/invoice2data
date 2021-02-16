@@ -37,7 +37,7 @@ input_mapping = {
 output_mapping = {"csv": to_csv, "json": to_json, "xml": to_xml, "none": None}
 
 
-def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None):
+def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, conv_cmdlist=None):
     """Extracts structured data from PDF/image invoices.
 
     This function uses the text extracted from a PDF file or image and
@@ -87,7 +87,7 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None):
     input_module = input_mapping[input_module]
     
     # print(templates[0])
-    extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist).decode("utf-8")
+    extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist, conv_cmdlist=conv_cmdlist).decode("utf-8")
 
     logger.debug("START pdftotext result ===========================")
     logger.error(extracted_str)
@@ -194,7 +194,13 @@ def create_parser():
         default="tesseract,-c,tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
         help="cmdlist for tesseract",
     )
-
+    
+    parser.add_argument(
+        "--imgcmd",
+        dest="imgcmd",
+        #default="tesseract,-c,tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="cmdlist for image processing",
+    )
     return parser
 
 def generate_output(output, output_name="invoices-output", output_date_format="%Y-%m-%d", output_module=None):
@@ -215,7 +221,10 @@ def main(args=None):
 
     if args.cmdlist:
         cmdlist = args.cmdlist.split("+")
-
+    if args.imgcmd:
+        imgcmd = args.imgcmd.split("+")
+    else:
+        imgcmd = None
     templates = []
     # Load templates from external folder if set.
     if args.template_folder:
@@ -226,7 +235,7 @@ def main(args=None):
         templates += read_templates()
     output = []
     for f in args.input_files:
-        res = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist)
+        res = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist, conv_cmdlist=imgcmd)
         if res:
             logger.info(res)
             output.append(res)

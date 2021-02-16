@@ -1,4 +1,4 @@
-def to_text(path, cmdlist=None):
+def to_text(path, cmdlist=None,conv_cmdlist=None):
     """Wraps Tesseract OCR.
 
     Parameters
