@@ -6,6 +6,7 @@ import shutil
 import os
 from os.path import join
 import logging
+import sys
 
 from .input import pdftotext
 from .input import pdfminer_wrapper
@@ -79,7 +80,7 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
      'currency': 'INR', 'desc': 'Invoice IBZY2087 from OYO'}
 
     """
-    #logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     if templates is None:
         templates = read_templates()

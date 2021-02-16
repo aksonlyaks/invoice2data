@@ -3,10 +3,10 @@ keywords:
 - Orgolife
 
 fields:
-  amount: NET AMOUNT\s+(\d+\.\d+)
+  amount: \W\sTotal\s*\:\s*(\d+\.\d{1,2})
 #BillNo: 14282 31/08/2020 21:12:12:PM
-  invoice_number: BillNo:\s+(\d+)
-  date: BillNo:\s+\d+\s+(\d{1,2}\/\d{1,2}\/\d{1,4})
+  invoice_number: \s*B?I?L?L?\s*N?O?\s*\:?\s*(B\d{5})
+  date: \s+DATE\s*AND\s*TIME\s*:\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
 options:
   remove_whitespace: false 
   currency: INR 
@@ -14,9 +14,9 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
-
-#FREEDOM R.OIL 1 114 108.00 108.00
+    
 lines:
-  start: em\s+N?ame?\s+Q?t?y\s+M?r?p?\s+R?a?t?e?\s+T?o?t?a?l?
-  end: \s+NET
-  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<quantity>\d+)\s(?P<mrp>\d+)\.?\d*\s(?P<rate>\d+)\.?\d*\s(?P<total>\d+)
+  start: Menu\s*Item\s*Qty\s*Rate\s*Amount\s*\-*
+  end: \-*\s*Total\s*Items
+  first_line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)\s*(?P<qty>\d+\.?\d*)\s*(?P<rate>\d+)\s*(?P<total>\d+\.\d{1,2})\s*
+  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z0-9]\b)

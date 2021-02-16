@@ -18,4 +18,4 @@ options:
 lines:
   start: \s*Ttem\s*Ma[m|r][e|\s?]\s*QTY\s*PRIC[E|\:]\s*TOTA[T|L].?
   end: Total
-  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z.]\b)\s?(?P<qty>\d+\.\d{1,2})(?P<price>\d+)\s*(?P<total>\d+)\s*
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z.]\b)\s?(?P<qty>\d+\.\d{1,2})(?P<rate>\d+)\s*(?P<total>\d+)\s*

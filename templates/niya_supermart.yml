@@ -20,5 +20,5 @@ options:
 lines:
   start: item\s+Name\s+aty\s+Mrp\s+Rate\s+Total
   end: \s+Grand
-  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s*(?P<quantity>\d+\.\d{2})\s*(?P<mrp>\d+)\s+(?P<rate>\d+\.\d{2})\s*(?P<total>\d+\.*\d{2})\s*
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s*(?P<qty>\d+\.\d{2})\s*(?P<mrp>\d+)\s+(?P<rate>\d+\.\d{2})\s*(?P<total>\d+\.*\d{2})\s*
 

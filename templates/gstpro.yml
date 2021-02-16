@@ -4,7 +4,8 @@ keywords:
 
 fields:
   #amount: Total:\s+[%$]?([0-9,]+.\d+)
-  amount: Total:([\w ,.]+)
+  amount: Total:(.*)
+  text: Total:.*(\n.*)
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: Bill#?#?:\s?(\d+)
   date: Bill#?#?\s?:\s?\d+\s+\[?ORIGINAL\]?\s+(\d{1,2}[.-]?\d{1,2}[.-]?\d{1,4})
@@ -18,6 +19,7 @@ options:
     - '%d-%m-%Y'
 
 lines:
-  start: Product\s+N?ame?\s+G?s?t\s+R?a?t?e?\s+Q?t?y?\s+T?o?t?a?l?
+  start: P?r?o?d?u?c?t\s?N?ame?\s+G?s?t\s+R?a?t?e?\s+Q?t?y?\s+T?o?t?a?l?
   end: Total\sTaxable
-  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<gst>\d+)\s(?P<rate>\w+.\w+)\s+(?P<qty>\d+)\s+(?P<total>\w+.\d+)
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b).?[0-9]?\s(?P<gst>\d+)\s(?P<rate>\w+.\w+)\s+(?P<qty>\d+)\s+(?P<total>\w+.\d+)
+

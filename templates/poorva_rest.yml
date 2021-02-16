@@ -20,4 +20,4 @@ options:
 lines:
   start: Amount\s+
   end: \s+[FT]otal\s+Amount\s+
-  line: (?P<description>[A-Za-z0-9. {1}]+[A-Za-z ]\b)\s?(?P<quantity>[\d+])[Pc][c]\b\s?(?P<rate>\d+)\.?\d*\s?(?P<total>\d+)\.?\d*\s*
+  line: (?P<description>[A-Za-z0-9. {1}]+[A-Za-z ]\b)\s?(?P<qty>[\d+])[Pc][c]\b\s?(?P<rate>\d+)\.?\d*\s?(?P<total>\d+)\.?\d*\s*

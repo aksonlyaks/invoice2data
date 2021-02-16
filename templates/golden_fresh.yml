@@ -20,4 +20,4 @@ options:
 lines:
   start: (c|i|I)tem[s|\s*]MRP\s*QTY\s+Price\s+Amount
   end: No\s+of
-  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<mrp>\d+\.?\d{1,2})\s*(?P<qty>\d+\.?\d{1,2})\s*(?P<price>\d+\.?\d{1,2})\s(?P<total>\d+\.\d*)\s*
+  line: (?P<description>[A-Za-z0-9. ]+[A-Za-z]\b)\s(?P<mrp>\d+\.?\d{1,2})\s*(?P<qty>\d+\.?\d{1,2})\s*(?P<rate>\d+\.?\d{1,2})\s(?P<total>\d+\.\d*)\s*

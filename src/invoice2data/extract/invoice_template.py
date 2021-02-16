@@ -110,7 +110,9 @@ class InvoiceTemplate(OrderedDict):
         amount_pipe = value[:last_comma_index] + "|" + value[last_comma_index+1:]
         #amount_pipe = value.replace(self.options["decimal_separator"], "|")
         # remove all possible thousands separators
-        amount_pipe_no_thousand_sep = re.sub(r"[.,]", "", amount_pipe)
+        amount_pipe_no_thousand_sep = re.sub(r"[^0-9| ]", "", amount_pipe)
+        logger.error("amount is "+ str(amount_pipe_no_thousand_sep))
+
         if " " in amount_pipe_no_thousand_sep:
             # remove values before space
             amount_pipe_no_thousand_sep = amount_pipe_no_thousand_sep.split(" ")[1]
