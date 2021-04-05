@@ -1,0 +1,24 @@
+issuer: LUCKY HONEST MART
+keywords:
+- LUCKY
+- CROSS
+- BDA
+
+fields:
+  amount: Total Amt\s*\:?\s*(\d+\.\d+)
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bill No. (\d+)
+  date: Date\s*:\s*(\d{1,2}/\d{1,2}/\d{1,4})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+    
+lines:
+  start: BARCODE\s*\w?t?y?\s*M?R?P?\s*RATE\s*Amount
+  end: i?tem\s*Q?t?y.*
+  line: \d*\s*(?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)
+  last_line: \s(?P<qty>\d+\.?\d*)\s*(?P<MRP>\d*\.?\d*)\s*(?P<rate>\d+\.?\d*)\s*(?P<total>\d+\.\d{1,2})\s*

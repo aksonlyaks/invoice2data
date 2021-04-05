@@ -1,13 +1,14 @@
 issuer: ORGANIC ERA 
 keywords:
 - Orgolife
-- Jayanagar
+- Customer
 
 fields:
-  amount: \W\sTotal\s*\:?\s*(\d+\.\d{1,2})
+  amount: Amount\:?\s*(\d+\.\d{1,2})
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: \s*B?I?L?L?\s*N?O?\s*\:?\s*(B\d{5})
-  date: \s+DATE\s*AND\s*TIME\s*:\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+  date: Date\s*:\s*(\d{1,4}-\d{1,2}-\d{1,2})
+  text: Words\:([A-Za-z\s]*)Paid 
 options:
   remove_whitespace: false 
   currency: INR 

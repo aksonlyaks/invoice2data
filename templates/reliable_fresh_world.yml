@@ -1,0 +1,27 @@
+issuer: RELIABLE FRESH WORLD
+keywords:
+#- RELIABLE
+#- WORLD
+#- 29AHTPA9S03C1ZC
+#- Billtt
+- GoFrugal
+
+fields:
+  amount: \s*TOTAL\s*:\s*(\d+\.\d{1,2})
+#Billtt: 521 Date: 03/04/21
+  invoice_number: \s*Bill\s*[a-z#0-9A-Z]{2}\:\s*([A-Za-z0-9]+)\b
+  date: \s*(\d{1,2}\/{0,1}\d{2}\/\d{1,2})\s*
+options:
+  remove_whitespace: false
+  currency: INR
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: \s*I?tem\s*Name\s*Qty\s*Rate\s*A?m?o?a?u?r?n?t?
+  end: \s*TotQ?ty\s*
+  first_line: (?P<description>[A-Za-z0-9&,\- ]+[A-Za-z0-9]\b)\s*(?P<qty>\d+\.?\d*)\s*(?P<rate>\d+\.?\d*)\s*(?P<total>\d+\.?\d*)\s* 
+  line: (?P<description>[A-Za-z0-9&,\- ]+[A-Za-z0-9]+)

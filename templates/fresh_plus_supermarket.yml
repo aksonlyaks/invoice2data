@@ -1,0 +1,27 @@
+issuer: Fresh Plus Super Market
+keywords:
+- FRESH
+- PLUS
+- SUPER
+- MARKET
+
+fields:
+  amount: \s*Grand\s{1}Total\s*(\d*\.\d{1,2})
+  #date: \s+([A-Z]{1}[a-z]{2}\s+\d{2}\,{1}\s+\d{4})
+  date: \s*GSTIN\:{1}\w{15}\s+([A-Z]{1}[a-z]{2}\s+\d{1,2}\,{1}\s+\d{4})
+  invoice_number: \s*Bill\s*No\:(B\d+\b)
+options:
+  remove_whitespace: false
+  currency: INR
+  languages:
+    - en
+  date_formats:
+    - '%B %d, %Y'
+
+lines:
+  start: \s*Item\s+Name\s+QTY\s+MRP\s+PRICE\s+TOTAL\s*
+  end: \s*Grand\s{1}Total\s*
+  lines:
+  start: \s*Item\s+Name\s+QTY\s+MRP\s+PRICE\s+TOTAL\s*
+  end: \s*Grand\s{1}Total\s*
+  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z]\b)\s*-?\d*?\.?\d*[a-zA-Z]*\s*(?P<quantity>\d+\.?\d*)\.?\s*(?P<price>\d+\.?\d*)\s*\-?(?P<total>\d+\.?\d*)\s*

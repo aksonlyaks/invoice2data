@@ -1,14 +1,16 @@
 issuer: SOBHA SUPERMARKET
 keywords:
-- WORKING
-- SOBHA
+- 9th
 - SUPERMARKET
+- Main
 
 fields:
-  amount: \s*(?:Received|scant|Balance|ane|lane|Sao)+\.?\s*\-?[\d.e]+\s*G*4*0*[5ZGCSFtrose.@ ]+\s*(\d+\.\d{1,2})
+  amount: Total\s*(\d*\.\d*)
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: B?i?l?l?\s*No\s*(A\-\d+)
   date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+  text: INR:(.*)
+
 options:
   remove_whitespace: false 
   currency: INR 
@@ -20,6 +22,6 @@ options:
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
   start: \s*[T|I]tem\s*MRP\s*QTY\s*Price\s*Tota?l?
-  end: Noof\s*[I|i]tem
-  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z26]\b):?\s*(?P<mrp>\d+\.\d{1,2})\s*(?P<quantity>\d+\.\d{1,2})\s*(?P<price>\d+\.\d{1,2})\s*(?P<total>\d+\.\d{1,2})\s*
+  end: Total\s*\d
+  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z261]\b):?\s*(?P<mrp>\d+\.\d{1,2})\s*(?P<qty>\d+\.\d{1,2})\s*(?P<rate>\d+\.\d{1,2})\s*(?P<total>\d+\.\d{1,2})\s*
 #  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z0-9]\b^\s)

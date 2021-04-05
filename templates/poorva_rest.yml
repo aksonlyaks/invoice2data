@@ -1,7 +1,7 @@
 # it works with --psm 6 and date will not get parse because in bill the last digit of year is missing.
 issuer: Poorva Resturant
 keywords:
-- Poorva
+- nonewe
 
 fields:
   amount: Total\s?Amount\s+(\d+\.\d+)

@@ -1,0 +1,24 @@
+issuer: PRISTINE STORE
+keywords:
+- RAM
+- SIGNIAA 
+
+fields:
+  amount: TOTAL\s*:\s*(\d+\.\d{1,2})
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bill?\s*4?#?#?\s*CA\s*(\d+)
+  date: \s*Date\s*(\d{1,2}\/\d{1,2}\/\d{1,2})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: \s*i?tem\s*Name\s*MRP\s*Rate\s*Qty\s*[aA]?m?a?r?t?
+  end: \s*Tot
+  first_line: (?P<description>[A-Za-z0-9&,\- ]+[A-Za-z6-]\b)\s*(?P<mrp>\d+\.?\d*)\s*(?P<rate>\d+\.?\d*)\s*(?P<qty>\d+\.?\d*)\s*(?P<total>\d+\.?\d*)\s*
+  line: (?P<description>[A-Za-z0-9&,\- ]+[A-Za-z0-9]\b)

@@ -1,8 +1,8 @@
 issuer: GOLDEN FRESH 
 keywords:
-- FRESH
+- FRESH1
 - SUPERMARKET
-
+- Hel1o
 fields:
   amount: Gross\s&\s+(\d+\.\d+)
 #BillNo: 14282 31/08/2020 21:12:12:PM

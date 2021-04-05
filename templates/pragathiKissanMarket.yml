@@ -5,7 +5,7 @@ keywords:
 fields:
   amount: \s*Total\s*\:\s*(\d+\.\d{1,2})
 #BillNo: 14282 31/08/2020 21:12:12:PM
-  invoice_number: \s*B?I?L?L?\s*N?O?\s*\:?\s*(B\d{5})
+  invoice_number: \s*Ref\s*\:\s*[A-Za-z0-9\-]{8}([A-Za-z0-9]{4,5})
   date: \s*Cust\s*(\d{1,2}\s*.+\s*\d{1,4})
 options:
   remove_whitespace: false 
@@ -19,6 +19,6 @@ options:
 lines:
   start: I?TEM\s*q?a[r|T|t]y\s*PRICE\s*TOTAL
   end: No.?\s*of\s*i[t|l]ems
-  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z]\b)\s*-?\d*?\.?\d*[a-zA-Z]*\s*(?P<quantity>\d+\.?\d*)\.?\s*(?P<price>\d+\.?\d*)\s*\-?(?P<total>\d+\.?\d*)\s*
+  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z]\b)\s*-?\d*?\.?\d*[a-zA-Z]*\s*(?P<qty>\d+\.?\d*)\.?\s*(?P<rate>\d+\.?\d*)\s*\-?(?P<total>\d+\.?\d*)\s*
 #  line: (?P<description>[A-Za-z0-9.&,:\- ]+[A-Za-z0-9]\b^\s)
 

@@ -81,27 +81,29 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
 
     """
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    try:
+        if templates is None:
+            templates = read_templates()
 
-    if templates is None:
-        templates = read_templates()
+        input_module = input_mapping[input_module]
+        
+        # print(templates[0])
+        extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist, conv_cmdlist=conv_cmdlist).decode("utf-8")
 
-    input_module = input_mapping[input_module]
-    
-    # print(templates[0])
-    extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist, conv_cmdlist=conv_cmdlist).decode("utf-8")
+        logger.debug("START pdftotext result ===========================")
+        logger.error(extracted_str)
+        logger.debug("END pdftotext result =============================")
 
-    logger.debug("START pdftotext result ===========================")
-    logger.error(extracted_str)
-    logger.debug("END pdftotext result =============================")
+        logger.debug("Testing {} template files".format(len(templates)))
+        for t in templates:
+            optimized_str = t.prepare_input(extracted_str)
 
-    logger.debug("Testing {} template files".format(len(templates)))
-    for t in templates:
-        optimized_str = t.prepare_input(extracted_str)
+            if t.matches_input(optimized_str):
+                return t.extract(optimized_str)
 
-        if t.matches_input(optimized_str):
-            return t.extract(optimized_str)
-
-    logger.error("No template for %s", invoicefile)
+        logger.error("No template for %s", invoicefile)
+    except Exception as ex:
+        logger.error("Exception occured in invoice conversion "+ str(ex))
     return False
 
 

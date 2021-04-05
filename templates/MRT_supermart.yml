@@ -1,0 +1,24 @@
+issuer: MRT SUPERMART
+keywords:
+- Telecom
+
+fields:
+  amount: Net\s*Bill\s*Amount\s*\:?\s*Rs\.?\s*(\d+\.\d+) 
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: \s*Bill\s*No\s*:\s*(S\/\d{1,2}\-\d{1,2}\/?\d{1,5})
+  date: Date\s*:\s*(\d{1,2}\-\d{1,2}\-\d{1,4})
+options:
+  remove_whitespace: false
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%-%m-%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: Sn\s*l?I?i?t?t?em\s*Name\s*MRP\s*Qty\s*Rate\s*Amount
+  end: Total\s*
+  first_line: \d*\s*(?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)\s*(?P<mrp>\d+)\s*(?P<qty>\d+\.?\d{1,2})\s*(?P<rate>\d+\.?\d{1,2})\s*(?P<total>\d+\.?\d{1,2})
+  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z0-9]\b)
+

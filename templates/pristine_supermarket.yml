@@ -1,0 +1,26 @@
+issuer: PRISTINE SUPERMARKET 
+keywords:
+- Jayanagar
+#- PRISTIN
+- SUPERMARKET
+#- PH8553658537
+
+fields:
+  amount: \s*Total\s*Amt:\s*(\d+\.\d{1,2})
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: \s*Bill?\s*4?#?#?\s*(\d+)
+  date: \s*Date\s*(\d{1,2}\/{0,1}\d{2}\/\d{1,2})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: \s*i?tem\s*Name\s*MRP\s*Rate\s*Qty\s*A?m?a?r?t?
+  end: \s*Total\s*Amt
+  line: (?P<description>[A-Za-z0-9&,\- ]+[A-Za-z0-9]\b)\s*(?P<mrp>\d+\.?\d*)\s*(?P<rate>\d+\.?\d*)\s*(?P<qty>\d+\.?\d*)\s*(?P<total>\d+\.?\d*)\s*
+  #line: (?P<description>[A-Za-z0-9&,\- ]+[A-Za-z0-9]\b)

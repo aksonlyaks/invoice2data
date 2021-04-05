@@ -1,0 +1,24 @@
+issuer: AGHRIFARM ORGANIC MART
+keywords:
+- ORGANIC
+- DAILY
+- Chandra
+
+fields:
+  amount: Total\s*(\d+\.\d{1,2})
+#BillNo: 14282 31/08/2020 21:12:12:PM
+  invoice_number: Bi?l?[lk]?#?\s*(\d+)
+  date: \s+Date\s*:\s*(\d{1,2}\/\d{1,2}\/\d{1,2})
+options:
+  remove_whitespace: false 
+  currency: INR 
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+    
+lines:
+  start: I?tem\s*Name\s*Qty\s*\-*\s*MRP\s*Price\s*Disc\s*Amt\s*\-*
+  end: Tot Q?ty \d* Total
+  first_line: \d*\s*(?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)\s*(?P<qty>\d*\.*\d+)\s*(?P<rate>\d*\.*\d+)\s*(?P<price>\d*\.*\d+)\s*(?P<disc>\d*\.*\d+)\s*(?P<total>\d*\.*\d+)
+  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)
