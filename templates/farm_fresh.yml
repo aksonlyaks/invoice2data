@@ -15,7 +15,10 @@ options:
     - en
   date_formats:
     - 'd%-%m-%Y'
-
+  psm: 3
+  tid: 
+    - 31142657
+  
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
   start: (i|I)tem\s+Q?t?y\s+R?a?t?e?\s+T?o?t?a?l?\s+

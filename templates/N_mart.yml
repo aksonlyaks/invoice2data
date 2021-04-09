@@ -1,7 +1,7 @@
 issuer: N Mart
 keywords:
 - Nmart
-
+- Hello
 fields:
   amount: Net\s?Bill\s?Am[o|a]unt\s?:\s?[₹|&|\s](\d+\.\d+)
 #BillNo: 14282 31/08/2020 21:12:12:PM
@@ -14,7 +14,10 @@ options:
     - en
   date_formats:
     - '%d-%m-%Y'
-
+  psm: 3
+  tid: 
+    - 93546421
+  
 lines:
   start: \s*Ttem\s*Ma[m|r][e|\s?]\s*QTY\s*PRIC[E|\:]\s*TOTA[T|L].?
   end: Total

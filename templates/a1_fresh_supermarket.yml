@@ -15,7 +15,9 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
-
+  psm: 3
+  tid: 
+   - 65784799
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
 #  start: Sitem\s+Qty\s+M[f|r][g|p][.| ]\s+Rate\s+Dise\s+Amount\s+

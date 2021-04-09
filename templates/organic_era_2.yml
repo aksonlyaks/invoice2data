@@ -16,6 +16,9 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
+  psm: 3
+  tid: 
+    - 28193563
     
 lines:
   start: Menu\s*Item\s*Qty\s*Rate\s*Amount\s*\-*

@@ -7,6 +7,7 @@ import os
 from os.path import join
 import logging
 import sys
+import copy 
 
 from .input import pdftotext
 from .input import pdfminer_wrapper
@@ -36,11 +37,12 @@ input_mapping = {
 }
 
 output_mapping = {"csv": to_csv, "json": to_json, "xml": to_xml, "none": None}
+cmdlist_psm3 = ["tesseract", "-c", "tessedit_char_whitelist=/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]
+cmdlist_psm6 = ["tesseract", "-l", "eng", "--oem", "1", "--psm", "6", "-c", "tessedit_char_whitelist=#-/%.:, abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]
 
-
-def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, conv_cmdlist=None):
+def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, conv_cmdlist=None, tid=None):
     """Extracts structured data from PDF/image invoices.
-
+˜
     This function uses the text extracted from a PDF file or image and
     pre-defined regex templates to find structured data.
 
@@ -82,11 +84,30 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
     """
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     try:
+        t = None
         if templates is None:
             templates = read_templates()
 
         input_module = input_mapping[input_module]
         
+        logger.error("Input tid is %s and Input module is %s", tid, input_module)
+        for tt in templates:
+            if t != None:
+                break
+            if "tid" in tt.options:
+                for tid_option in tt.options["tid"]:
+                    if str(tid_option) == tid:
+                        t = tt
+                        logger.error(f'Template found based on tid {t.options["tid"]} {t["issuer"]}')
+                        
+                
+        if t != None and "psm" in t.options:
+            logger.error("PSM is %d", t.options["psm"])
+            if str(t.options["psm"]) == "3":
+                cmdlist = copy.deepcopy(cmdlist_psm3)
+            else:
+                cmdlist = copy.deepcopy(cmdlist_psm6)
+
         # print(templates[0])
         extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist, conv_cmdlist=conv_cmdlist).decode("utf-8")
 
@@ -95,11 +116,16 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
         logger.debug("END pdftotext result =============================")
 
         logger.debug("Testing {} template files".format(len(templates)))
-        for t in templates:
-            optimized_str = t.prepare_input(extracted_str)
+        if t == None:
+            logger.error(f'Searching template based on Keyword')
+            for t in templates:
+                optimized_str = t.prepare_input(extracted_str)
 
-            if t.matches_input(optimized_str):
-                return t.extract(optimized_str)
+                if t.matches_input(optimized_str):
+                    return t.extract(optimized_str)
+        else:
+            optimized_str = t.prepare_input(extracted_str) 
+            return t.extract(optimized_str)
 
         logger.error("No template for %s", invoicefile)
     except Exception as ex:
@@ -204,6 +230,14 @@ def create_parser():
         #default="tesseract,-c,tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
         help="cmdlist for image processing",
     )
+
+    parser.add_argument(
+        "--tid",
+        dest="tid",
+        #default="tesseract,-c,tessedit_char_whitelist=#-/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        help="cmdlist for image processing",
+    )
+
     return parser
 
 def generate_output(output, output_name="invoices-output", output_date_format="%Y-%m-%d", output_module=None):
@@ -238,7 +272,7 @@ def main(args=None):
         templates += read_templates()
     output = []
     for f in args.input_files:
-        res = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist, conv_cmdlist=imgcmd)
+        res = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist, conv_cmdlist=imgcmd, tid=args.tid)
         if res:
             logger.info(res)
             output.append(res)

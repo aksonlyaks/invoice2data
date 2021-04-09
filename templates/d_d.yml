@@ -16,6 +16,7 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
+  psm: 3
 
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:

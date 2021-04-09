@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-
+import logging
+logger = logging.getLogger(__name__)
 
 def to_text(path, cmdlist=None, conv_cmdlist=None):
     """Wraps Tesseract OCR.
@@ -41,7 +42,7 @@ def to_text(path, cmdlist=None, conv_cmdlist=None):
         ]"""
         conv_cmdlist.append(path)
         conv_cmdlist.append("tiff:-")
-        print(f'Image conversion cmd {conv_cmdlist}')
+        logger.error(f'Image conversion cmd {conv_cmdlist}')
 
         convert = conv_cmdlist
 
@@ -88,8 +89,8 @@ def to_text(path, cmdlist=None, conv_cmdlist=None):
             cmdlist.append("stdout")
             tess = cmdlist
         p2 = subprocess.Popen(tess,  stdout=subprocess.PIPE)
-
     out, err = p2.communicate()
+    logger.error(f'conversion command {tess} ')
 
     extracted_str = out
 

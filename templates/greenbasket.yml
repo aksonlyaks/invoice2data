@@ -18,7 +18,10 @@ options:
     - en
   date_formats:
     - '%d %B %Y'
-
+  psm: 6
+  tid: 
+    - 28595542
+  
 lines:
   start: \s*Name\s+[QO]{1}ty\s+Amt\b
   end: \s*R[a-z]{4,5}\s*[A-Za-z]{3}\b

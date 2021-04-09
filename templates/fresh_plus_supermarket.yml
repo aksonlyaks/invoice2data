@@ -17,7 +17,9 @@ options:
     - en
   date_formats:
     - '%B %d, %Y'
-
+  psm: 3
+  tid: 
+    - 27394419
 lines:
   start: \s*Item\s+Name\s+QTY\s+MRP\s+PRICE\s+TOTAL\s*
   end: \s*Grand\s{1}Total\s*

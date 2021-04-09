@@ -5,7 +5,7 @@ keywords:
 - BDA
 
 fields:
-  amount: Total Amt\s*\:?\s*(\d+\.\d+)
+  amount: Total Amt\s*[:a-zA-z0-9]{1}\s*(\d+\.\d+)
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: Bill No. (\d+)
   date: Date\s*:\s*(\d{1,2}/\d{1,2}/\d{1,4})
@@ -16,7 +16,10 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
-    
+  psm: 3
+  tid: 
+    - 39235353
+      
 lines:
   start: BARCODE\s*\w?t?y?\s*M?R?P?\s*RATE\s*Amount
   end: i?tem\s*Q?t?y.*

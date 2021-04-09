@@ -14,7 +14,9 @@ options:
     - en
   date_formats:
     - 'd% %B %Y'
-
+  psm: 3
+  tid: 
+    - 28646261
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
   start: I?TEM\s*q?a[r|T|t]y\s*PRICE\s*TOTAL

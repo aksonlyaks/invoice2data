@@ -15,7 +15,10 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
-
+  psm: 6
+  tid: 
+    - 54362482
+  
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
   start: \s*i?tem\s*Name\s*MRP\s*Rate\s*Qty\s*[aA]?m?a?r?t?
