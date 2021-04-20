@@ -3,7 +3,7 @@ keywords:
 - Pragathi
 
 fields:
-  amount: \s*Total\s*\:\s*(\d+\.\d{1,2})
+  amount: \s*T[oa]{1}tal\s*\:\s*(\d+\.\d{1,2})
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: \s*Ref\s*\:\s*[A-Za-z0-9\-]{8}([A-Za-z0-9]{4,5})
   date: \s*Cust\s*(\d{1,2}\s*.+\s*\d{1,4})

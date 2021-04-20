@@ -1,12 +1,13 @@
 issuer: MRT SUPERMART
 keywords:
-- Telecom
+  - Telecom
 
 fields:
   amount: Net\s*Bill\s*Amount\s*\:?\s*Rs\.?\s*(\d+\.\d+) 
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: \s*Bill\s*No\s*:\s*(S\/\d{1,2}\-\d{1,2}\/?\d{1,5})
   date: Date\s*:\s*(\d{1,2}\-\d{1,2}\-\d{1,4})
+  text: Amount\s*in\s*Words\:\s*Rs.?(.*)
 options:
   remove_whitespace: false
   currency: INR 

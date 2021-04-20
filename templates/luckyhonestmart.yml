@@ -5,7 +5,7 @@ keywords:
 - BDA
 
 fields:
-  amount: Total Amt\s*[:a-zA-z0-9]{1}\s*(\d+\.\d+)
+  amount: To?tal\s*Amt\s*\:?\s*(\d+\.\d+)
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: Bill No. (\d+)
   date: Date\s*:\s*(\d{1,2}/\d{1,2}/\d{1,4})

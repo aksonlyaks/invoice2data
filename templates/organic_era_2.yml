@@ -4,7 +4,7 @@ keywords:
 - Customer
 
 fields:
-  amount: Amount\:?\s*(\d+\.\d{1,2})
+  amount: Grand\s*Total\:?\s*(\d+\.\d{1,2})
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: \s*B?I?L?L?\s*N?O?\s*\:?\s*(B\d{5})
   date: Date\s*:\s*(\d{1,4}-\d{1,2}-\d{1,2})
@@ -16,12 +16,14 @@ options:
     - en
   date_formats:
     - 'd%/%m/%Y'
-  psm: 3
+  psm: 6
   tid: 
     - 28193563
     
 lines:
-  start: Menu\s*Item\s*Qty\s*Rate\s*Amount\s*\-*
-  end: \-*\s*Total\s*Items
+  #start: \s*Menu\s*Item\s*Qty\s*Rate\s*Amount\s*\-*
+  #end: \-*\s*Total\s*Items
+  start: \s*Price\s*
+  end: \s*Total\s*\d+\s*
   first_line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)\s*(?P<qty>\d+\.?\d*)\s*(?P<rate>\d+)\s*(?P<total>\d+\.\d{1,2})\s*
   line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z0-9]\b)

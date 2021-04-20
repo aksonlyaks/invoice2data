@@ -1,0 +1,31 @@
+issuer: NEW FOOD MARKET
+keywords:
+- NEW
+- FOOD
+- MARKET
+
+fields:
+  # TOTAL                 6.00                   129.00
+  amount: \s*TOTAL\s*\d+\.\d+\s*(\d+\.\d+)
+  # INVOICE NO: POS 163
+  invoice_number: \s*INVOICE\s*NO:\s*[A-Z]+\s*(\d*)\s*
+  # DATE: 14-04-2021 
+  date: \s+DATE\s*:*\s*(\d{1,2}\-\d{1,2}\-\d{4})
+  text: (.*)\.?\s*Only
+options:
+  remove_whitespace: false
+  currency: INR
+  languages:
+    - en
+  date_formats:
+    - '%d-%m-%Y'
+  psm: 6
+  tid:
+    - 71339436
+lines:
+  # NO  PARTICULARS            QTY   M.R.P    RATE   AMOUNT
+  start: \s*NO\s*PARTICULARS\s*QTY\s*M\.R\.P\s*RATE\s*AMOUNT\s*
+  # TOTAL
+  end: \s*TOTAL\s*
+  first_line: \d+\s*\.\s*(?P<description>[A-Za-z0-9.&,\- *]+[A-Za-z*]\b)\s*(?P<qty>\d*[,.]*\d+)\s*(?P<rate>\d*\.*\d+)\s*(?P<price>\d*\.*\d+)\s*(?P<total>\d*\.*\d+)
+  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)

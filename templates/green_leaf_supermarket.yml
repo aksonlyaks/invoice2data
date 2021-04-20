@@ -1,0 +1,27 @@
+issuer: GREEN LEAF SUPERMARKET
+keywords:
+- HBR
+- LEAF
+
+fields:
+  amount: \s*[Tt]{1}[oO]{1}[Ttr]{1}[a-zA-z]+\s*\:\s*(\d+\.\d{1,2})
+  invoice_number: Bi?l?[lkt]?#?\s*(\d+)
+  date: \s+Date\s*:*\s*(\d{1,2}\/\d{1,2}\/\d{1,2})
+  text: (.*)\.?\s*Only
+options:
+  remove_whitespace: false
+  currency: INR
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+  psm: 6
+  tid:
+    - 71355565
+lines:
+  # Item Qty MRP Rate Amount
+  start: \s*I?tem\s*Qty\s*MRP\s*Rate\s*Amount\s*
+  # TotQty
+  end: \s*TotQ?ty\s*
+  first_line: \d*\s*(?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)\s*(?P<qty>\d*[,.]*\d+)\s*(?P<rate>\d*\.*\d+)\s*(?P<price>\d*\.*\d+)\s*(?P<total>\d*\.*\d+)
+  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)
