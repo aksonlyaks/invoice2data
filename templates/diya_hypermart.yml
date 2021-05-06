@@ -1,0 +1,28 @@
+issuer: DIYA HYPER MART
+keywords:
+
+- Diya
+
+fields:
+  # Net Payable 85.00
+  amount: \s*Net\s*Payable\s*(\d*.\d*)\s*
+  #BillNo: 14282 31/08/2020 21:12:12:PM
+  #text: \n([\sA-Za-z]*).?\nCustomerHome
+  invoice_number: Bill\s?No\s?([\-\w]*)\s
+  date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+options:
+  remove_whitespace: false
+  currency: INR
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+  psm: 6
+  tid:
+    - 28926515
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+  start: \s*.*\s*Name\s*.*\s*Amount\s*
+  end: \s*(T|t|l|I)ot\s*Qty\s*:?\s*.*
+  line: (?P<description>.+\b)\s+(?P<mrp>.+\b)\s+(?P<qty>.+\b)\s+(?P<rate>.+\b)\s+(?P<total>.+\b)

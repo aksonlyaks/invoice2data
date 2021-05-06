@@ -1,0 +1,28 @@
+issuer: ALV FRESH SUPERMARKET
+keywords:
+- ALV
+- FRESH
+
+fields:
+  # .-TOTAL:.....188.00
+  amount: \s*[.-]*TOTAL\s*:*\s*[.]+\s*(\d+\.\d+).*\s*
+  #text: \n([\sA-Za-z]*).?\nCustomerHome
+  invoice_number: Bill\s?No\s?([\-\w]*)\s
+  date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+options:
+  remove_whitespace: false
+  currency: INR
+  languages:
+    - en
+  date_formats:
+    - 'd%/%m/%Y'
+  psm: 6
+  tid:
+    - 71354897
+
+#FREEDOM R.OIL 1 114 108.00 108.00
+lines:
+
+  start: \s*.*\s*Name\s*.*\s*Amount\s*
+  end: \s*.*\s*Qty\s*.*\s*Total\s*.*\s*
+  line: (?P<description>.+\b)\s+(?P<qty>.+\b)\s+(?P<rate>.+\b)\s+(?P<total>.+\b)
