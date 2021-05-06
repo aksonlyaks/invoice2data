@@ -10,19 +10,25 @@ fields:
   text: \n([\sA-Za-z]*).?\nCustomerHome
   invoice_number: Bill\s?No\s?([\-\w]*)\s    
   date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
+  noofitem: No\s*of\s*\w?tem\s*(\d+)
 options:
   remove_whitespace: false 
   currency: INR 
   languages:
     - en
+  replace:
+    - [",", ""]
+    - ["zoo", "200"]
+    - ["[G6][0oO][D0Oo]", "600"]
+    - ["[L1][0oO][D0OoL1]", "100"]
   date_formats:
     - 'd%/%m/%Y'
-  psm: 3
+  psm: 6
   tid: 
     - 28551694
   
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
-  start: \s*I?tem\s*MRP\s*QTY\s*Price\s*Amount\:?\s*
-  end: No\s*(o|c)\s*f?\s*(t|I|i)tem\s*\b
-  line: (?P<description>.+\b)\s+(?P<mrp>.+\b)\s+(?P<qty>.+\b)\s+(?P<rate>.+\b)\s+(?P<total>.+\b)
+  start: \s*\w*\s*MRP\s*QTY\s*Price\s*Amount\:?\s*
+  end: \s*Total
+  line: (?P<description>.+)\s+(?P<mrp>\w{1,4}\.?\w{2})[\s|\.]+(?P<qty>\d+?\.?\d{1,4})[\s|\.]+(?P<rate>\d{1,4}\.\d{2})\s*(?P<total>\d{1,4}\.?\d{1,2}$)

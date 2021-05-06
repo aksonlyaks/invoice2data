@@ -5,8 +5,8 @@ keywords:
 - Main
 
 fields:
-  #amount: Total\s*(\d*\.\d*)
-  amount: \s*Gross\s*[A-Za-z]?\s+(\d*\.\d*)
+  amount: Total\s*\d*\.\d*\s*(\d*\.\d*)
+  #amount: \s*Gross\s*[A-Za-z]?\s+(\d*\.\d*)
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: B?i?l?l?\s*No\s*(A\-\d+)
   date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
@@ -19,7 +19,7 @@ options:
     - en
   date_formats:
     - 'd% %m %Y'
-  psm: 3
+  psm: 6
   tid: 
     - 36641122
   

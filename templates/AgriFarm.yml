@@ -9,20 +9,25 @@ fields:
 #BillNo: 14282 31/08/2020 21:12:12:PM
   invoice_number: Bi?l?[lkt]?#?\s*(\d+)
   date: \s+Date\s*:*\s*(\d{1,2}\/\d{1,2}\/\d{1,2})
+  noofitem: \s*T?ot\s*I?t?ems\s*(\d+)
+  
 options:
-  remove_whitespace: false 
-  currency: INR 
+  remove_whitespace: false
+  currency: INR
   languages:
     - en
   date_formats:
     - 'd%/%m/%Y'
+  replace: 
+    - [",", "."]
   psm: 6
-  tid: 
-    - 79111485    
+  tid:
+    - 79111485
 lines:
   # ItemName Qty - MRP Price Disc% Amt
   start: \s*Item\s*Name\s*Qty\s*-?\s*MRP\s*Price\s*Disc%?\s*Amt\s*
-  end: Tot Q?ty \d* Total
-  first_line: (?P<description>.+\b)\s+(?P<qty>.+\b)\s+(?P<mrp>.+\b)\s+(?P<rate>.+\b)\s+(?P<disc>.+\b)\s+(?P<total>.+\b)
-  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)
-  line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)  
+  end: T?ot\s*Q?ty
+  # ItemName Qty - MRP Price Disc Amt
+  first_line: \d*\.?\s*(?P<description>.+\b)\s+(?P<qty>\d{1,4}\.\d{1,2})\s*(?P<mrp>\d{1,5}\.?\d{1,2})\s+(?P<rate>\d{1,4}\.\d{1,2})\s+(?P<disc>\d{1,2})\%?\s+(?P<total>\d{1,4}\.?\d{1,2}$)
+  line: (?P<description>\w+\s*\w+)
+  #line: (?P<description>[A-Za-z0-9.&,\- ]+[A-Za-z]\b)
