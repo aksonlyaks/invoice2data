@@ -111,7 +111,7 @@ class InvoiceTemplate(OrderedDict):
         #amount_pipe = value.replace(self.options["decimal_separator"], "|")
         # remove all possible thousands separators
         amount_pipe_no_thousand_sep = re.sub(r"[^0-9| ]", "", amount_pipe)
-        logger.error("amount is "+ str(amount_pipe_no_thousand_sep))
+        logger.debug("amount is "+ str(amount_pipe_no_thousand_sep))
 
         if " " in amount_pipe_no_thousand_sep:
             # remove values before space
@@ -126,7 +126,7 @@ class InvoiceTemplate(OrderedDict):
             date_formats=self.options["date_formats"],
             languages=self.options["languages"]
         )
-        logger.error("result of date parsing=%s", res)
+        logger.debug("result of date parsing=%s", res)
         return res
 
     def coerce_type(self, value, target_type):

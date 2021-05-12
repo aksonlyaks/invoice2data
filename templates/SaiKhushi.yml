@@ -10,7 +10,8 @@ fields:
   text: \n([\sA-Za-z]*).?\nCustomerHome
   invoice_number: Bill\s?No\s?([\-\w]*)\s    
   date: Date\s*(\d{1,2}\/\d{1,2}\/\d{1,4})
-  noofitem: No\s*of\s*\w?tem\s*(\d+)
+  noofitem: No\s*\w*\s*\w?tem\s*(\d+)
+  totalqty: Total\s*\wty\s*(\d+.?\d+)
 options:
   remove_whitespace: false 
   currency: INR 
@@ -21,14 +22,27 @@ options:
     - ["zoo", "200"]
     - ["[G6][0oO][D0Oo]", "600"]
     - ["[L1][0oO][D0OoL1]", "100"]
+    - ["-", " "]
+    - ["\\d(\\.)\\s", "0 "]
+    #COLGATEPASTE MK 20.00 00.20.00 20.00
+    #COLGATEGBACAI7 57.00 0057.00 57.00
+    - ["\\s00\\.?", " 100 "]
   date_formats:
     - 'd%/%m/%Y'
-  psm: 6
+  psm: 4
   tid: 
     - 28551694
+  correction: True
+  #imgcmd: ["convert",  "-magnify", "-unsharp", "0x25x0x25"]
+  #imgcmd: ["convert", "-scale", "100%"]
+  decimal: [{"total":2, "qty":2, "rate":2, "totalqty":2}]
+  correction_priority: "qty"
+  #imgcmd: ["convert", "-scale", "200%", "-resize", "200%", "-unsharp", "0.25x0.25"]
+  #imgcmd: ["convert", "-fuzz", "5%", "-trim"]
+  
   
 #FREEDOM R.OIL 1 114 108.00 108.00
 lines:
-  start: \s*\w*\s*MRP\s*QTY\s*Price\s*Amount\:?\s*
+  start: \s*\w*\s*MRP\s*\w?TY\s*Price\s*Amount\:?\s*
   end: \s*Total
-  line: (?P<description>.+)\s+(?P<mrp>\w{1,4}\.?\w{2})[\s|\.]+(?P<qty>\d+?\.?\d{1,4})[\s|\.]+(?P<rate>\d{1,4}\.\d{2})\s*(?P<total>\d{1,4}\.?\d{1,2}$)
+  line: ^(?P<description>.+)\s+(?P<mrp>[\w|\.]+)[\s]+(?P<qty>[\w|\.]+)[\s]+(?P<rate>\d{1,4}\.?\d{1,2})[\s|:]+(?P<total>\d{1,4}\.?\d{1,2}$)

@@ -8,6 +8,7 @@ from os.path import join
 import logging
 import sys
 import copy 
+import re
 
 from .input import pdftotext
 from .input import pdfminer_wrapper
@@ -22,6 +23,7 @@ from invoice2data.extract.loader import read_templates
 from .output import to_csv
 from .output import to_json
 from .output import to_xml
+from invoice2data.decorators import timeit
 
 
 logger = logging.getLogger(__name__)
@@ -40,6 +42,7 @@ output_mapping = {"csv": to_csv, "json": to_json, "xml": to_xml, "none": None}
 cmdlist_psm3 = ["tesseract", "-c", "tessedit_char_whitelist=/.: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]
 cmdlist_psm6 = ["tesseract", "-l", "eng", "--oem", "1", "--psm", "6", "-c", "tessedit_char_whitelist=#-/%.:, abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]
 
+@timeit
 def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, conv_cmdlist=None, tid=None):
     """Extracts structured data from PDF/image invoices.
 ˜
@@ -106,8 +109,13 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
             if str(t.options["psm"]) == "3":
                 cmdlist = copy.deepcopy(cmdlist_psm3)
             else:
+                cmdlist_psm6[6] = str(t.options["psm"])
                 cmdlist = copy.deepcopy(cmdlist_psm6)
-
+        
+        if t!=None and "imgcmd" in t.options:
+            logger.error("imgcmd is %s", t.options["imgcmd"])
+            conv_cmdlist = t.options["imgcmd"]
+            
         # print(templates[0])
         extracted_str = input_module.to_text(invoicefile, cmdlist=cmdlist, conv_cmdlist=conv_cmdlist).decode("utf-8")
 
@@ -116,8 +124,13 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
         logger.debug("END pdftotext result =============================")
 
         logger.debug("Testing {} template files".format(len(templates)))
+        missed = -1
+        corrected = -1
+        issue_lines = []
+        qtyerr = ""
+        noofitem = -1
+        output = []
         if t == None:
-            logger.error(f'Searching template based on Keyword')
             for t in templates:
                 optimized_str = t.prepare_input(extracted_str)
 
@@ -125,11 +138,17 @@ def extract_data(invoicefile, templates=None, input_module="png", cmdlist=None, 
                     return t.extract(optimized_str)
         else:
             optimized_str = t.prepare_input(extracted_str) 
-            return t.extract(optimized_str)
+            output = t.extract(optimized_str)
+            if t != None and "decimal" in t.options:
+                missed, corrected, issue_lines, qtyerr, noofitem = post_process(output, t.options)
+            
+            return output, missed, corrected, issue_lines, qtyerr, noofitem
 
         logger.error("No template for %s", invoicefile)
+        return output, missed, corrected, issue_lines, qtyerr, noofitem
     except Exception as ex:
         logger.error("Exception occured in invoice conversion "+ str(ex))
+
     return False
 
 
@@ -271,8 +290,9 @@ def main(args=None):
     if not args.exclude_built_in_templates:
         templates += read_templates()
     output = []
+
     for f in args.input_files:
-        res = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist, conv_cmdlist=imgcmd, tid=args.tid)
+        res, missed, corrected, issue_lines, qtyerr, noofitem = extract_data(f.name, templates=templates, input_module=args.input_reader, cmdlist=cmdlist, conv_cmdlist=imgcmd, tid=args.tid)
         if res:
             logger.info(res)
             output.append(res)
@@ -294,6 +314,135 @@ def main(args=None):
         f.close()
 
     generate_output(output, output_name=args.output_name, output_date_format=args.output_date_format, output_module=args.output_format)
+
+    sys.exit(missed)
+
+def post_process(output, options):
+    option = options['decimal']
+    pattern_qty = "(\d+)\W?(\d{%d}).*" % option[0]['qty']
+    pattern_rate = "(\d+)\W?(\d{%d}).*" % option[0]['rate']
+    pattern_total = "(\d+)\W?(\d{%d}).*" % option[0]['total']
+    pattern_totalqty = "(\d+)\W?(\d{%d}).*" % option[0]['totalqty']
+            
+    if 'totalqty' in output:
+        output['totalqty'] = re.sub(pattern_totalqty, r'\1.\2', output['totalqty'])
+    
+    count = 0
+    corrected = 0
+    issue_lines = []
+    qtyerr = ""
+    noofitem = 0
+    missed = -1
+    issue_lines = []
+    if 'lines' in output:
+        for items in output['lines']:
+            if 'qty' in items:
+                items['qty'] = re.sub(pattern_qty, r'\1.\2', items['qty'])
+            if 'rate' in items:
+                items['rate'] = re.sub(pattern_rate, r'\1.\2', items['rate'])
+            if 'total' in items:
+                items['total'] = re.sub(pattern_total, r'\1.\2', items['total'])
+
+            logger.info("-----------------------------")
+            if 'description' in items:
+                logger.info(str(count)+". "+ items['description'])
+            else:
+                logger.info("Description missing")
+                continue
+            
+            if 'rate' in items:
+                if re.search("[^0-9^\.]", items['rate']):
+                    logger.info("Error: Rate contains string "+items['rate'])
+                    items['rate'] = stringinvalue_correction(items['rate'])
+                    logger.info("Error: Rate after correction "+items['rate'])
+
+                elif float(items['rate']) == 0.0:
+                    logger.info("Error: Rate is zero")
+
+            if 'gst' in items:
+                if re.search("[^0-9^\.]", items['gst']):
+                    logger.info("GST contains string")
+            
+            if 'qty' in items:
+                if re.search("[^0-9^\.]", items['qty']):
+                    logger.info("Error: qty contains string "+items['qty'])
+                    items['qty'] = stringinvalue_correction(items['qty'])
+                    logger.info("Error: qty after correction "+items['qty'])
+                elif float(items['qty']) == 0.0:
+                    logger.info("Error: Quantity is zero")
+
+            if 'total' in items:
+                if re.search("[^0-9^\.]", items['total']):
+                    logger.info("Error: Total contains string "+items['total'])
+                    items['total'] = stringinvalue_correction(items['total'])
+                    logger.info("Error: total after correction "+items['total'])
+
+                elif float(items['total']) == 0.0:
+                    logger.info("Error: Total is zero")
+
+            err, prod, tot = test_line_basedontotal(items)
+            logger.info(f"Qty*rate = {prod} and total = {tot} -- {err} ")
+
+            if (err == "NoMatch") and (options['correction_priority'] == 'qty'):
+                correct_qty(items)
+
+                err, prod, tot = test_line_basedontotal(items)
+                logger.info(f"After Correction Qty*rate = {prod} and total = {tot} -- {err} ")
+                
+                if err == "NoMatch":
+                    issue_lines.append(count)
+                else:
+                    corrected = corrected + 1
+
+            count = count + 1
+        
+        missed = 0
+        if 'noofitem' in output:
+            if output['noofitem']:
+                noofitem = float(output['noofitem'])
+            if output['noofitem'] and int(output['noofitem']) != count:
+                missed = int(output['noofitem']) - count
+                logger.error(f'Error: Missed {missed} while parsing')
+        
+        if 'totalqty' in output:
+            qtyerr, totalqty = test_qty_basedontotalqty(output, output['totalqty'])
+            logger.error(f"Total calculated qty {totalqty} and total qty captured {output['totalqty']} -- {qtyerr} ")
+
+        logger.info("-----------------------------")
+
+    return missed, corrected, issue_lines, qtyerr, noofitem
+
+def correct_qty(items):          
+     items['qty'] = str(("{:.2f}".format(float(items['total'])/float(items['rate']))))
+
+def stringinvalue_correction(str_val):
+    if str_val[0] == "O" or str_val[0] == "o" or str_val[0] == "Q":
+        str_val = "0." + str_val[1:]
+    else:
+        str_val = "0.0"
+    
+    if re.search("[^0-9^\.]", str_val):
+        str_val = "0.0"
+    return str_val
+
+def test_line_basedontotal(line_item):
+    product_of_qtyrate = "{:.2f}".format(float(line_item['qty']) * float(line_item['rate']))
+    total_of_item = "{:.2f}".format(float(line_item['total']))
+    if abs(float(product_of_qtyrate) - float(total_of_item)) <= 1:
+        return "Match", product_of_qtyrate, total_of_item
+    else:
+        return "NoMatch", product_of_qtyrate, total_of_item
+
+def test_qty_basedontotalqty(items, totalqty):
+    total_qty = 0.0
+    for line in items['lines']:
+        total_qty = total_qty + float(line['qty'])
+
+    if abs(total_qty - float(totalqty)) <= 1:
+        return "Match", "{:.2f}".format(total_qty)
+    else:
+        return "NoMatch", "{:.2f}".format(total_qty)
+
 
 if __name__ == "__main__":
     main()
